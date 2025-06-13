@@ -1,1 +1,1 @@
-mapsmithstudios.github.io
+mapsmithstudios.org
