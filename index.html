@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Worlds Collection</title>
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #1a202c;
+            --text-secondary: #718096;
+            --text-muted: #a0aec0;
+            --accent: #667eea;
+            --accent-hover: #5a67d8;
+            --border: #e2e8f0;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --header-bg: rgba(255, 255, 255, 0.8);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-card: #21262d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --text-muted: #656d76;
+            --accent: #7c3aed;
+            --accent-hover: #8b5cf6;
+            --border: #30363d;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --header-bg: rgba(13, 17, 23, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: all 0.2s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        header {
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            min-height: 60px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            width: 250px;
+            transition: all 0.2s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.4rem 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            min-width: 60px;
+            height: 32px;
+        }
+
+        .theme-toggle:hover {
+            background: var(--border);
+        }
+
+        .theme-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid currentColor;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .theme-icon::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        [data-theme="dark"] .theme-icon {
+            background: currentColor;
+        }
+
+        [data-theme="dark"] .theme-icon::before {
+            border-color: currentColor;
+            transform: scale(1.4);
+            opacity: 0.3;
+        }
+
+        .hero {
+            padding: 4rem 0 3rem;
+            text-align: left;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-weight: 400;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            border: 1px solid var(--accent);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .content-section {
+            padding: 3rem 0;
+        }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .info-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            transition: all 0.2s ease;
+        }
+
+        .info-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .info-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .info-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .worlds-section {
+            background: var(--bg-secondary);
+            padding: 4rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .section-description {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .worlds-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .world-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .world-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--shadow);
+        }
+
+        .world-image {
+            height: 180px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .world-content {
+            padding: 1.5rem;
+        }
+
+        .world-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .world-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .world-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .world-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            border-radius: 5px;
+        }
+
+        footer {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            padding: 2.5rem 0;
+            text-align: center;
+        }
+
+        .footer-content {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .search-box {
+                width: 180px;
+            }
+            
+            .section-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .worlds-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-right {
+                gap: 0.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                justify-content: center;
+            }
+            
+            .world-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">
+                <div class="logo-icon">MW</div>
+                Minecraft Worlds
+            </a>
+            <div class="nav-right">
+                <input type="text" class="search-box" placeholder="Search worlds..." />
+                <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+                    <div class="theme-icon" id="theme-icon"></div>
+                    <span id="theme-text">Dark</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1 class="hero-title">Minecraft Worlds Collection</h1>
+                <p class="hero-subtitle">Your place for custom worlds</p>
+                <p class="hero-description">
+                    Discover and download amazing custom Minecraft worlds created by the community. 
+                    From medieval kingdoms to futuristic cities, find the perfect world for your next adventure.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#worlds" class="btn btn-primary">Browse Worlds</a>
+                    <a href="#contribute" class="btn btn-secondary">Submit World</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <div class="container">
+                <div class="section-grid">
+                    <div class="info-card">
+                        <h3>🌍 Worlds</h3>
+                        <p>Browse our collection of custom Minecraft worlds. Each world is carefully tested and includes detailed information about version compatibility and features.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>🐛 Found Issues?</h3>
+                        <p>Encountered a problem with a world or have suggestions? Open an issue on our GitHub repository or reach out through our Discord community.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>🤝 Contribute</h3>
+                        <p>Have an amazing world to share? We welcome community contributions! Submit your world with screenshots and detailed descriptions.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="worlds-section" id="worlds">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Featured Worlds</h2>
+                    <p class="section-description">
+                        Hand-picked worlds that showcase creativity, technical skill, and attention to detail.
+                    </p>
+                </div>
+                <div class="worlds-grid" id="worlds-container">
+                    <!-- World cards will be generated by JavaScript -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <p>Released under the MIT License.</p>
+                <p>Copyright © 2025-present Your Name</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Sample world data
+        const worlds = [
+            {
+                title: "Medieval Kingdom",
+                description: "A massive medieval kingdom complete with castles, villages, and detailed dungeons. Perfect for roleplay servers and adventure maps.",
+                version: "1.20+",
+                size: "50MB",
+                downloads: "2.3k",
+                icon: "🏰",
+                downloadUrl: "#"
+            },
+            {
+                title: "Futuristic Metropolis",
+                description: "A sprawling cyberpunk city with towering skyscrapers, neon-lit streets, and advanced transportation systems.",
+                version: "1.19+", 
+                size: "75MB",
+                downloads: "1.8k",
+                icon: "🌆",
+                downloadUrl: "#"
+            },
+            {
+                title: "Tropical Paradise",
+                description: "Beautiful tropical islands with custom beaches, detailed palm trees, and extensive underwater cave systems.",
+                version: "1.20+",
+                size: "32MB", 
+                downloads: "3.1k",
+                icon: "🏝️",
+                downloadUrl: "#"
+            },
+            {
+                title: "Steampunk Factory",
+                description: "Industrial steampunk world featuring massive factories, floating airships, and intricate mechanical contraptions.",
+                version: "1.18+",
+                size: "68MB",
+                downloads: "1.5k",
+                icon: "⚙️", 
+                downloadUrl: "#"
+            },
+            {
+                title: "Mystical Forest",
+                description: "Enchanted forest realm with magical creatures, elaborate treehouses, and hidden mystical landmarks.",
+                version: "1.20+",
+                size: "41MB",
+                downloads: "2.7k",
+                icon: "🌲",
+                downloadUrl: "#"
+            },
+            {
+                title: "Space Station Omega",
+                description: "Massive orbital space station with multiple modules, zero-gravity chambers, and realistic sci-fi technology.",
+                version: "1.19+",
+                size: "55MB", 
+                downloads: "1.9k",
+                icon: "🚀",
+                downloadUrl: "#"
+            }
+        ];
+
+        function createWorldCard(world) {
+            return `
+                <div class="world-card">
+                    <div class="world-image">
+                        ${world.icon}
+                    </div>
+                    <div class="world-content">
+                        <h3 class="world-title">${world.title}</h3>
+                        <p class="world-description">${world.description}</p>
+                        <div class="world-meta">
+                            <span>Version: ${world.version}</span>
+                            <span>Size: ${world.size}</span>
+                            <span>Downloads: ${world.downloads}</span>
+                        </div>
+                        <div class="world-actions">
+                            <button class="btn btn-primary btn-small" onclick="downloadWorld('${world.title}', '${world.downloadUrl}')">
+                                Download
+                            </button>
+                            <button class="btn btn-secondary btn-small" onclick="viewDetails('${world.title}')">
+                                Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadWorlds() {
+            const container = document.getElementById('worlds-container');
+            container.innerHTML = worlds.map(createWorldCard).join('');
+        }
+
+        function downloadWorld(title, url) {
+            if (url === '#') {
+                alert(`Download for "${title}" would start here. Replace with actual download URLs.`);
+            } else {
+                window.open(url, '_blank');
+            }
+        }
+
+        function viewDetails(title) {
+            alert(`Detailed view for "${title}" would open here. Consider linking to individual world pages.`);
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const themeText = document.getElementById('theme-text');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeText.textContent = 'Dark';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeText.textContent = 'Light';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const themeText = document.getElementById('theme-text');
+            
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.body.setAttribute('data-theme', 'dark');
+                if (themeText) themeText.textContent = 'Light';
+            } else {
+                if (themeText) themeText.textContent = 'Dark';
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+            loadWorlds();
+        });
+    </script>
+</body>
+</html>
